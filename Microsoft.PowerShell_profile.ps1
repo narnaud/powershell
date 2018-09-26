@@ -1,7 +1,5 @@
-$ScriptDir = Split-Path $script:MyInvocation.MyCommand.Path
-
 # Add personal scripts path
-$env:Path += ";" + (Join-Path $ScriptDir "bin")
+$env:Path += ";" + $PSScriptRoot + "\bin"
 
 # PSReadline customization
 # Set-PSReadlineKeyHandler -Key Tab -Function Complete # Unix completion
@@ -33,6 +31,18 @@ Set-Location C:\nicolas
 #  Import-Module "$ChocolateyProfile"
 #}
 
+function Start-NewWindow([String]$Path)
+{
+    <#
+    .SYNOPSIS
+        Start a new powershell window in a sepecif directory
+    .DESCRIPTION
+        The Start-NewWindow creates a new powershell window, starting in the directory pass as parameter.
+    #>
+    $cline = "`"/c start powershell.exe -noexit -c `"Set-Location '{0}'" -f $Path
+    cmd $cline
+}
+
 # Posh-Alias module
 Import-Module posh-alias
 Add-Alias e 'ii .'
@@ -46,3 +56,8 @@ Add-Alias sh 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\s
 
 # Posh-Git
 Import-Module posh-git
+Start-SshAgent -Quiet
+
+# Ps-Env
+Import-Module ps-env
+Set-PsEnvConfig "C:\nicolas\Config\tools\tools.json"

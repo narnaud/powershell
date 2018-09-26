@@ -1,0 +1,55 @@
+{
+    "test":
+    [
+        {
+            "name": "path",
+            "display": "Base PATH tests",
+            "path":
+            [
+                ".",
+                ".."
+            ]
+        },
+        {
+            "name": "set-test",
+            "display": "Variable creation",
+            "set":
+            {
+                "FOO": "Hello",
+                "BAR": "World!"
+            }
+        },
+        {
+            "name": "modify-test",
+            "display": "Variable modification",
+            "append":
+            {
+                "FOO": ", World!",
+                "BAZ": "appended"
+            },
+            "prepend":
+            {
+                "BAR": "Hello, ",
+                "FOT": "prepended"
+            }
+        },
+        {
+            "name": "delete-test",
+            "display": "Variable deletion",
+            "delete":
+            [
+                "BAZ",
+                "FOT"
+            ]
+        }
+    ],
+    "batch-test":
+    [
+        {
+            "defer":
+            [
+                "legacy.bat"
+            ]
+        }
+    ]
+}
