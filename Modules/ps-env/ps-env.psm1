@@ -245,12 +245,12 @@ function Use-Tool {
 }
 
 
-#. $PSScriptRoot\UseTabExpansion.ps1
+. $PSScriptRoot\UseTabExpansion.ps1
 
 ## Exported commands and aliases -----------------------------------------------
 Set-Alias use Use-Tool
 
 Export-ModuleMember Set-PsEnvConfig
 Export-ModuleMember Use-Tool
-#Export-ModuleMember TabExpansion
+Export-ModuleMember TabExpansion
 Export-ModuleMember -Alias use

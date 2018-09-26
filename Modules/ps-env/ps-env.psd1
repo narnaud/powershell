@@ -5,5 +5,4 @@
 	Copyright  =  'MIT'
 
 	ModuleToProcess = 'ps-env.psm1'
-	FunctionsToExport = @('Set-PsEnvConfig', 'Use-Tool')
 }
