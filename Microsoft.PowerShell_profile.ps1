@@ -1,9 +1,22 @@
-# Add personal scripts path
-$env:Path += ";" + $PSScriptRoot + "\bin"
+#User variables
+$ToolsFile = "C:\nicolas\Config\tools\tools.json"
+$HomeDir = "C:\nicolas"
+$AliasHash = @{
+	e     = 'ii .'                      # Open explorer in the current directory
+	s     = 'Start-NewWindow $pwd.Path' # Start a new powershell window
+	cc11  = 'clang++ -std=gnu++11'
+	cc14  = 'clang++ -std=gnu++14'
+	cc17  = 'clang++ -std=gnu++1z'
+	n     = 'start "C:\\Program Files\\Notepad++\\notepad++.exe"'
+	qtc   = 'C:\\Qt\\Tools\\QtCreator\\bin\\qtcreator.exe -client'
+	sh    = 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\sh.exe'
+	bash  = 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\bash.exe'
+	tools = 'start "C:\\Program Files\\Notepad++\\notepad++.exe" $ToolsFile'
+}
 
 # PSReadline customization
 # Set-PSReadlineKeyHandler -Key Tab -Function Complete # Unix completion
-Set-PSReadlineOption -BellStyle None # Reove the bell
+Set-PSReadlineOption -BellStyle None # Remove the bell
 
 # Make sure to replace && with ; when copying git commands
 Set-PSReadlineKeyHandler -Key Ctrl+V `
@@ -23,7 +36,7 @@ Set-PSReadlineKeyHandler -Key Ctrl+V `
 }
 
 #Set-Location "~"
-Set-Location C:\nicolas
+Set-Location $HomeDir
 
 # Chocolatey profile
 #$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
@@ -40,19 +53,11 @@ function Start-NewWindow([String]$Path)
 
 # Posh-Alias module
 Import-Module posh-alias
-Add-Alias e 'ii .'
-Add-Alias s 'Start-NewWindow $pwd.Path'
-Add-Alias cc11 'clang++ -std=gnu++11'
-Add-Alias cc14 'clang++ -std=gnu++14'
-Add-Alias cc17 'clang++ -std=gnu++1z'
-Add-Alias n 'start "C:\\Program Files\\Notepad++\\notepad++.exe"'
-Add-Alias qtc 'C:\\Qt\\Tools\\QtCreator\\bin\\qtcreator.exe -client'
-Add-Alias sh 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\sh.exe'
-Add-Alias bash 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\bash.exe'
+$AliasHash.GetEnumerator() | ForEach-Object{ Add-Alias $_.key $_.value }
 
 # Ps-Env
 Import-Module ps-env
-Set-PsEnvConfig "C:\nicolas\Config\tools\tools.json"
+Set-PsEnvConfig $ToolsFile
 
 # Posh-Git
 Import-Module posh-git
@@ -68,7 +73,7 @@ Import-Module cd-extras
 # Prompt improvement
 # Rewrite the path so it displays only 2 items, and '~' if it's the Filesystem hom (may be different from $home)
 function Get-EnhancedPromptPath {
-	$HomeDir = (Get-PsProvider 'FileSystem').home
+	#$HomeDir = (Get-PsProvider 'FileSystem').home
 	if($pwd -like $HomeDir) { return '~' }
 
 	$currentPath = split-path $pwd -leaf
@@ -96,7 +101,7 @@ $GitPromptSettings.DefaultPromptPath = ''
 function prompt {
     # Your non-prompt logic here
     $prompt = Write-Prompt $(Get-PsEnvToolName) -ForegroundColor ([ConsoleColor]::Magenta)
-    $prompt = Write-Prompt $(Get-EnhancedPromptPath) -ForegroundColor ([ConsoleColor]::DarkGreen)
+    $prompt = Write-Prompt $(Get-EnhancedPromptPath) -ForegroundColor ([ConsoleColor]::Gray)
     $prompt += & $GitPromptScriptBlock
     if ($prompt) { "$prompt " } else { " " }
 }
