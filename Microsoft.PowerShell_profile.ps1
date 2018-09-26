@@ -61,3 +61,6 @@ Start-SshAgent -Quiet
 # Ps-Env
 Import-Module ps-env
 Set-PsEnvConfig "C:\nicolas\Config\tools\tools.json"
+
+# Cd-extra
+Import-Module cd-extras
