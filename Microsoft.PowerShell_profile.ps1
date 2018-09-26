@@ -31,14 +31,9 @@ Set-Location C:\nicolas
 #  Import-Module "$ChocolateyProfile"
 #}
 
+# Start a new powershell window in a specific directory
 function Start-NewWindow([String]$Path)
 {
-    <#
-    .SYNOPSIS
-        Start a new powershell window in a sepecif directory
-    .DESCRIPTION
-        The Start-NewWindow creates a new powershell window, starting in the directory pass as parameter.
-    #>
     $cline = "`"/c start powershell.exe -noexit -c `"Set-Location '{0}'" -f $Path
     cmd $cline
 }
@@ -53,6 +48,7 @@ Add-Alias cc17 'clang++ -std=gnu++1z'
 Add-Alias n 'start "C:\\Program Files\\Notepad++\\notepad++.exe"'
 Add-Alias qtc 'C:\\Qt\\Tools\\QtCreator\\bin\\qtcreator.exe -client'
 Add-Alias sh 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\sh.exe'
+Add-Alias bash 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\bash.exe'
 
 # Posh-Git
 Import-Module posh-git
@@ -64,3 +60,7 @@ Set-PsEnvConfig "C:\nicolas\Config\tools\tools.json"
 
 # Cd-extra
 Import-Module cd-extras
+
+# Change the ~ location - $env:HOME is still C:\Users\nicolas
+# Usefull for cd without arguments
+(Get-PsProvider 'FileSystem').home = 'C:\nicolas'
