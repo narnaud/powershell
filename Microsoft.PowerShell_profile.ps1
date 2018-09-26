@@ -66,5 +66,37 @@ Import-Module cd-extras
 (Get-PsProvider 'FileSystem').home = 'C:\nicolas'
 
 # Prompt improvement
-# $GitPromptSettings.DefaultPromptAbbreviateHomeDirectory = $true
-$GitPromptSettings.DefaultPromptPrefix = '$(Get-PsEnvToolName)'
+# Rewrite the path so it displays only 2 items, and '~' if it's the Filesystem hom (may be different from $home)
+function Get-EnhancedPromptPath {
+	$HomeDir = (Get-PsProvider 'FileSystem').home
+	if($pwd -like $HomeDir) { return '~' }
+
+	$currentPath = split-path $pwd -leaf
+	$parent_pwd = split-path $pwd -parent
+	if($currentPath -imatch '[a-z]:\\') { return '\' }
+
+	if($parent_pwd) {
+		if($parent_pwd -like $HomeDir)
+		{
+			$parent = '~'
+		} else {
+			$parent = split-path $parent_pwd -leaf
+		}
+
+		if( $parent -imatch '[a-z]:\\') {
+			$currentPath = "\$currentPath"
+		} else {
+			$currentPath = "$parent\$currentPath"
+		}
+	}
+
+	return $currentPath
+}
+$GitPromptSettings.DefaultPromptPath = ''
+function prompt {
+    # Your non-prompt logic here
+    $prompt = Write-Prompt $(Get-PsEnvToolName) -ForegroundColor ([ConsoleColor]::Magenta)
+    $prompt = Write-Prompt $(Get-EnhancedPromptPath) -ForegroundColor ([ConsoleColor]::DarkGreen)
+    $prompt += & $GitPromptScriptBlock
+    if ($prompt) { "$prompt " } else { " " }
+}
