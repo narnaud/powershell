@@ -2,7 +2,7 @@
 ##  PsEnv, a simple tool-specific environment management for PowerShell.
 ##  URL: https://github.com/DuFace/PsEnv
 ##  Copyright (c) 2013 Kier Dugan
-##
+
 
 ## Utility functions -----------------------------------------------------------
 function GetJsonKeys($jsonObject) {
@@ -56,6 +56,7 @@ function Set-PsEnvConfig {
         # Load the specified JSON file into a global variable
         $Global:PsEnvConfig = (Get-Content $ConfigFile) -join "`n" |
             ConvertFrom-Json
+        $Global:PsEnvToolName = ""
     }
 }
 
@@ -241,6 +242,40 @@ function Use-Tool {
             Set-Location $toolGo
         }        
 
+		# Set the tool name
+        $Global:PsEnvToolName = $toolName
+    }
+}
+
+
+<#
+.SYNOPSIS
+
+Get the tool name currently set by Use-Tool.
+
+
+.DESCRIPTION
+
+This function returns the name of the current tool, with a prefix and suffix.
+It can be used for the prompt.
+#>
+function Get-PsEnvToolName {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$false)]
+        [String]
+        $Prefix = '[',
+		
+        [Parameter(Mandatory=$false)]
+        [String]
+        $Suffix = '] '
+    )
+
+    process {
+		if ($Global:PsEnvToolName) {
+			return $Prefix + $Global:PsEnvToolName + $Suffix
+		}
+		return $null
     }
 }
 
@@ -252,5 +287,6 @@ Set-Alias use Use-Tool
 
 Export-ModuleMember Set-PsEnvConfig
 Export-ModuleMember Use-Tool
+Export-ModuleMember Get-PsEnvToolName
 Export-ModuleMember TabExpansion
 Export-ModuleMember -Alias use

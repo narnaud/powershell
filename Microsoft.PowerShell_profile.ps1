@@ -50,13 +50,13 @@ Add-Alias qtc 'C:\\Qt\\Tools\\QtCreator\\bin\\qtcreator.exe -client'
 Add-Alias sh 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\sh.exe'
 Add-Alias bash 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\bash.exe'
 
-# Posh-Git
-Import-Module posh-git
-Start-SshAgent -Quiet
-
 # Ps-Env
 Import-Module ps-env
 Set-PsEnvConfig "C:\nicolas\Config\tools\tools.json"
+
+# Posh-Git
+Import-Module posh-git
+Start-SshAgent -Quiet
 
 # Cd-extra
 Import-Module cd-extras
@@ -64,3 +64,7 @@ Import-Module cd-extras
 # Change the ~ location - $env:HOME is still C:\Users\nicolas
 # Usefull for cd without arguments
 (Get-PsProvider 'FileSystem').home = 'C:\nicolas'
+
+# Prompt improvement
+# $GitPromptSettings.DefaultPromptAbbreviateHomeDirectory = $true
+$GitPromptSettings.DefaultPromptPrefix = '$(Get-PsEnvToolName)'
