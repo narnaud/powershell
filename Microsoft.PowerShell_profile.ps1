@@ -43,3 +43,6 @@ Add-Alias cc17 'clang++ -std=gnu++1z'
 Add-Alias n 'start "C:\\Program Files\\Notepad++\\notepad++.exe"'
 Add-Alias qtc 'C:\\Qt\\Tools\\QtCreator\\bin\\qtcreator.exe -client'
 Add-Alias sh 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\sh.exe'
+
+# Posh-Git
+Import-Module posh-git
