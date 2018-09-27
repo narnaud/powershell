@@ -5,6 +5,7 @@ $HomeDir = "C:\nicolas"
 $AliasHash = @{
 	e     = 'ii .'                      # Open explorer in the current directory
 	s     = 'Start-NewWindow $pwd.Path' # Start a new powershell window
+	la    = 'ls -Force'                # Like ls -al on unix
 	cc11  = 'clang++ -std=gnu++11'
 	cc14  = 'clang++ -std=gnu++14'
 	cc17  = 'clang++ -std=gnu++1z'
@@ -106,6 +107,10 @@ Start-SshAgent -Quiet
 
 # Cd-extra
 Import-Module cd-extras
+
+# PSColor
+Import-Module PSColor
+$global:PSColor.File.Code.Pattern = '\.(java|c|cpp|cs|js|css|html|ui|h|hpp)$'
 
 
 # Prompt
