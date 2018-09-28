@@ -20,6 +20,7 @@ $AliasHash = @{
 # Home location
 # ==============
 # Change the ~ location - $env:HOME is still C:\Users\nicolas
+
 (Get-PsProvider 'FileSystem').home = $HomeDir
 Set-Location $HomeDir
 
@@ -96,6 +97,9 @@ Set-PSReadlineKeyHandler -Key Ctrl+V `
 # Posh-Alias module
 Import-Module posh-alias
 $AliasHash.GetEnumerator() | ForEach-Object{ Add-Alias $_.key $_.value }
+if (Get-Command hub -errorAction SilentlyContinue) {
+    Add-Alias git hub # Set github hub alias for git
+}
 
 # Ps-Env
 Import-Module ps-env
@@ -111,6 +115,9 @@ Import-Module cd-extras
 # PSColor
 Import-Module PSColor
 $global:PSColor.File.Code.Pattern = '\.(java|c|cpp|cs|js|css|html|ui|h|hpp)$'
+
+# Import git-status-cache-posh-client
+Import-Module (Join-Path $PSScriptRoot 'Modules\git-status-cache\1.0.0\GitStatusCachePoshClient.psm1')
 
 
 # Prompt
