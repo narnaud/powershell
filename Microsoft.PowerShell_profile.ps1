@@ -117,7 +117,8 @@ Import-Module PSColor
 $global:PSColor.File.Code.Pattern = '\.(java|c|cpp|cs|js|css|html|ui|h|hpp)$'
 
 # Import git-status-cache-posh-client
-Import-Module (Join-Path $PSScriptRoot 'Modules\git-status-cache\1.0.0\GitStatusCachePoshClient.psm1')
+# Commented out, as it is quite slow the first time
+# Import-Module (Join-Path $PSScriptRoot 'Modules\git-status-cache\1.0.0\GitStatusCachePoshClient.psm1')
 
 
 # Prompt
