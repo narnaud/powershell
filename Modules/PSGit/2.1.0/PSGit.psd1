@@ -40,9 +40,7 @@ Description = 'A PowerShell implementation of Git, providing a new command-line 
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @(
-    @{ModuleName="Configuration"; ModuleVersion="1.1.1"}
-)
+RequiredModules = @()
 
 # Assemblies that must be loaded prior to importing this module
 RequiredAssemblies = 'lib\LibGit2Sharp.dll'
@@ -78,7 +76,7 @@ AliasesToExport = '*'
 # ModuleList = @()
 
 # List of all files packaged with this module
-FileList = @('.\Configuration.psd1','.\PSGit.formats.ps1xml','.\PSGit.psd1','.\PSGit.psm1','.\PSGit.types.ps1xml','.\PSGitPrompt.ps1','.\en-US\about_PSGit.help.txt','.\lib\LibGit2Sharp.dll','.\lib\LibGit2Sharp.pdb','.\lib\LibGit2Sharp.xml','.\lib\NativeBinaries\amd64\git2-785d8c4.dll','.\lib\NativeBinaries\amd64\git2-785d8c4.pdb','.\lib\NativeBinaries\x86\git2-785d8c4.dll','.\lib\NativeBinaries\x86\git2-785d8c4.pdb')
+FileList = @('.\PSGit.formats.ps1xml','.\PSGit.psd1','.\PSGit.psm1','.\PSGit.types.ps1xml','.\PSGitPrompt.ps1','.\en-US\about_PSGit.help.txt','.\lib\LibGit2Sharp.dll','.\lib\LibGit2Sharp.pdb','.\lib\LibGit2Sharp.xml','.\lib\NativeBinaries\amd64\git2-785d8c4.dll','.\lib\NativeBinaries\amd64\git2-785d8c4.pdb','.\lib\NativeBinaries\x86\git2-785d8c4.dll','.\lib\NativeBinaries\x86\git2-785d8c4.pdb')
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{

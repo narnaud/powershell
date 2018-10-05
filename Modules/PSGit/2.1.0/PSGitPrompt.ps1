@@ -1,141 +1,53 @@
-function Set-PromptSetting {
-    [Alias("Set-PromptSettings")]
-    [CmdletBinding()]
-    param(
-        [string]$AfterChangesText = "]:",
-        [ConsoleColor]$AfterChangesForeground,
-        [ConsoleColor]$AfterChangesBackground,
-
-        [string]$AfterNoChangesText = "]:",
-        [ConsoleColor]$AfterNoChangesForeground,
-        [ConsoleColor]$AfterNoChangesBackground,
-
-        [string]$AheadByText = '▲',
-        [ConsoleColor]$AheadByForeground,
-        [ConsoleColor]$AheadByBackground,
-
-        [string]$BehindByText = '▼',
-        [ConsoleColor]$BehindByForeground,
-        [ConsoleColor]$BehindByBackground,
-
-        [string]$BeforeText = "[",
-        [ConsoleColor]$BeforeForeground,
-        [ConsoleColor]$BeforeBackground,
-
-        [string]$BranchText = $([char]0x03BB),
-        [ConsoleColor]$BranchForeground,
-        [ConsoleColor]$BranchBackground,
-
-        [string]$BeforeChangesText = '',
-        [ConsoleColor]$BeforeChangesForeground,
-        [ConsoleColor]$BeforeChangesBackground,
-
-        [string]$SeparatorText = '|',
-        [ConsoleColor]$SeparatorForeground,
-        [ConsoleColor]$SeparatorBackground,
-
-        [ConsoleColor]$StagedChangesForeground,
-        [ConsoleColor]$StagedChangesBackground,
-
-        [ConsoleColor]$UnStagedChangesForeground,
-        [ConsoleColor]$UnStagedChangesBackground,
-
-        [string]$NoStatusText = ':',
-        [ConsoleColor]$NoStatusForeground,
-        [ConsoleColor]$NoStatusBackground,
-
-        [ConsoleColor]$IndexForeground,
-        [ConsoleColor]$IndexBackground,
-
-        [ConsoleColor]$WorkingForeground,
-        [ConsoleColor]$WorkingBackground,
-
-        [Switch]$HideZero
-    )
-
-    $config = Import-Configuration
-    switch($PSBoundParameters.Keys) {
-        "AfterChangesText" { $config.AfterChanges.Object = $PSBoundParameters[$_] }
-        "AfterChangesBackground" { $config.AfterChanges.Background = $PSBoundParameters[$_] }
-        "AfterChangesForeground" { $config.AfterChanges.Foreground = $PSBoundParameters[$_] }
-
-        "AfterNoChangesText" { $config.AfterNoChanges.Object = $PSBoundParameters[$_] }
-        "AfterNoChangesBackground" { $config.AfterNoChanges.Background = $PSBoundParameters[$_] }
-        "AfterNoChangesForeground" { $config.AfterNoChanges.Foreground = $PSBoundParameters[$_] }
-
-        "AheadByText" { $config.AheadBy.Object = $PSBoundParameters[$_] }
-        "AheadByBackground" { $config.AheadBy.Background = $PSBoundParameters[$_] }
-        "AheadByForeground" { $config.AheadBy.Foreground = $PSBoundParameters[$_] }
-
-        "BeforeText" { $config.Before.Object = $PSBoundParameters[$_] }
-        "BeforeBackground" { $config.Before.Background = $PSBoundParameters[$_] }
-        "BeforeForeground" { $config.Before.Foreground = $PSBoundParameters[$_] }
-
-        "BeforeChangesText" { $config.BeforeChanges.Object = $PSBoundParameters[$_] }
-        "BeforeChangesBackground" { $config.BeforeChanges.Background = $PSBoundParameters[$_] }
-        "BeforeChangesForeground" { $config.BeforeChanges.Foreground = $PSBoundParameters[$_] }
-
-        "BehindByText" { $config.BehindBy.Object = $PSBoundParameters[$_] }
-        "BehindByBackground" { $config.BehindBy.Background = $PSBoundParameters[$_] }
-        "BehindByForeground" { $config.BehindBy.Foreground = $PSBoundParameters[$_] }
-
-        "BranchText" { $config.Branch.Object = $PSBoundParameters[$_] }
-        "BranchBackground" { $config.Branch.Background = $PSBoundParameters[$_] }
-        "BranchForeground" { $config.Branch.Foreground = $PSBoundParameters[$_] }
-
-        "SeparatorText" { $Config.Separator.Object = $PSBoundParameters[$_] }
-        "SeparatorBackground" { $Config.Separator.Background = $PSBoundParameters[$_] }
-        "SeparatorForeground" { $Config.Separator.Foreground = $PSBoundParameters[$_] }
-
-        "StagedChangesBackground" { $config.StagedChanges.Background = $PSBoundParameters[$_] }
-        "StagedChangesForeground" { $config.StagedChanges.Foreground = $PSBoundParameters[$_] }
-
-        "UnStagedChangesBackground" { $config.UnStagedChanges.Background = $PSBoundParameters[$_] }
-        "UnStagedChangesForeground" { $config.UnStagedChanges.Foreground = $PSBoundParameters[$_] }
-
-        "NoStatusText" { $config.NoStatus.Text = $PSBoundParameters[$_] }
-        "NoStatusForeground" { $config.NoStatus.Foreground = $PSBoundParameters[$_] }
-        "NoStatusBackground" { $config.NoStatus.Background = $PSBoundParameters[$_] }
-
-        "IndexForeground" { $config.Index.Foreground = $PSBoundParameters[$_] }
-        "IndexBackground" { $config.Index.Background = $PSBoundParameters[$_] }
-
-        "WorkingForeground" { $config.Working.Foreground = $PSBoundParameters[$_] }
-        "WorkingBackground" { $config.Working.Background = $PSBoundParameters[$_] }
-
-        "HideZero" { $Config.HideZero = [bool]$HideZero }
-    }
-
-    # function Clear-Config {
-    #     [CmdletBinding()]
-    #     param(
-    #         [AllowNull()][AllowEmptyString()]
-    #         [Parameter(ValueFromPipelineByPropertyName)]
-    #         [String]$Text,
-
-    #         [AllowNull()][AllowEmptyString()]
-    #         [Parameter(ValueFromPipelineByPropertyName)]
-    #         [ConsoleColor]$Foreground,
-
-    #         [AllowNull()][AllowEmptyString()]
-    #         [Parameter(ValueFromPipelineByPropertyName)]
-    #         [ConsoleColor]$Background
-    #     )
-    #     $Properties = @{} + $PSBoundParameters
-    #     foreach($key in @($Properties.Keys)) {
-    #         if($Properties.$key -eq "" -or $Properties.$Key -eq $Null) {
-    #             $null = $Properties.Remove($Key)
-    #         }
-    #     }
-    #     [PSCustomObject]$Properties
-    # }
-
-    # foreach($section in "AfterChanges","AfterNoChanges","AheadBy","Before","BeforeChanges","BehindBy","Branch","Separator","StagedChanges","UnStagedChanges","NoStatus","Index","Working") {
-    #     $config.$section = $config.$section | Clear-Config
-    # }
-
-    Export-Configuration $config
+class PsGitType {
+    [string]$Text
+    [psobject]$Foreground
+    [psobject]$Background
+	
+	PsGitType([string]$Text) {
+		$this.Text = $Text
+		$this.Foreground = $null
+		$this.Background = $null
+	}
+	
+	PsGitType([string]$Text, [psobject]$Foreground) {
+		$this.Text = $Text
+		$this.Foreground = $Foreground
+		$this.Background = $null
+	}
+	
+	PsGitType([string]$Text, [psobject]$Foreground, [psobject]$Background) {
+		$this.Text = $Text
+		$this.Foreground = $Foreground
+		$this.Background = $Background
+	}
+	
+	PsGitType([psobject]$Foreground) {
+		$this.Text = $null
+		$this.Foreground = $Foreground
+		$this.Background = $null
+	}
 }
+
+class PsGitSettings {
+	[PsGitType]$AfterChanges = [PsGitType]::new("]", [ConsoleColor]::Yellow)
+	[PsGitType]$AfterNoChanges = [PsGitType]::new("]", [ConsoleColor]::Yellow)
+	
+	[PsGitType]$AheadBy = [PsGitType]::new([char]0x2191, [ConsoleColor]::Green)
+	[PsGitType]$BehindBy = [PsGitType]::new([char]0x2193, [ConsoleColor]::Green)
+	
+	[PsGitType]$Before = [PsGitType]::new("[", [ConsoleColor]::Yellow)
+	[PsGitType]$Branch = [PsGitType]::new([ConsoleColor]::Green)
+
+	[PsGitType]$BeforeChanges = [PsGitType]::new(' ', [ConsoleColor]::White)
+	[PsGitType]$Separator = [PsGitType]::new(' | ', [ConsoleColor]::Yellow)
+
+	[PsGitType]$StagedChanges = [PsGitType]::new([ConsoleColor]::White)
+	[PsGitType]$UnStagedChanges = [PsGitType]::new([ConsoleColor]::Red)
+
+	[Switch]$HideZero = $false
+}
+
+
 
 function Write-Text {
     [CmdletBinding()]
@@ -163,16 +75,14 @@ function Write-Text {
 function Write-Status {
     [CmdletBinding()]
     param (
-        $Status,
-        $Config
+        $Status
     )
     end {
         if(!$Status) { $Status = Get-Status -WarningAction SilentlyContinue}
-        if(!$Config) { $Config = Import-Configuration }
+		$config = [PsGitSettings]::new()
 
         if($Status -and $Config) {
             $config.Before | Write-Text
-            $config.Branch | Write-Text
             $config.Branch | Write-Text ($Status.Branch + " ")
             if($Status.AheadBy -gt 0) {
                 $config.AheadBy | Write-Text
@@ -186,12 +96,11 @@ function Write-Status {
             $StagedChanges = @($Status.Changes | Where { $_.Staged })
             $UnStagedChanges = @($Status.Changes | Where { !$_.Staged })
 
-            if(($StagedChanges.Length -gt 0 -or $UnStagedChanges.Length -gt 0) -and $config.BeforeChanges.Object) {
+            if(($StagedChanges.Length -gt 0 -or $UnStagedChanges.Length -gt 0)) {
                 $config.BeforeChanges | Write-Text
             }
 
             if(0 -ne $StagedChanges.Length) {
-				Write-Host $StagedChanges.Length
                 $count = @($StagedChanges | Where { $_.Change -eq "Added" }).Length
                 if(0 -lt $count -or !$config.HideZero) {
                     $config.StagedChanges | Write-Text "+$count "
@@ -207,7 +116,7 @@ function Write-Status {
                 }
             }
 
-            if(($StagedChanges.Length -gt 0 -and $UnStagedChanges.Length -gt 0) -and $config.Separator.Object) {
+            if(($StagedChanges.Length -gt 0 -and $UnStagedChanges.Length -gt 0)) {
                 $config.Separator | Write-Text
             }
 
@@ -228,10 +137,10 @@ function Write-Status {
                 }
             }
 
-            if(($StagedChanges.Length -gt 0 -or $UnStagedChanges.Length -gt 0) -and $config.AfterChanges.Object) {
+            if(($StagedChanges.Length -gt 0 -or $UnStagedChanges.Length -gt 0)) {
                 $config.AfterChanges | Write-Text
             }
-            if(($StagedChanges.Length -eq 0 -and $UnStagedChanges.Length -eq 0) -and $config.AfterNoChanges.Object) {
+            if(($StagedChanges.Length -eq 0 -and $UnStagedChanges.Length -eq 0)) {
                 $config.AfterNoChanges | Write-Text
             }
 
