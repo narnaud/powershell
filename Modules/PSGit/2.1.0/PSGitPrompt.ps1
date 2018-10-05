@@ -29,22 +29,18 @@ class PsGitType {
 }
 
 class PsGitSettings {
-	[PsGitType]$AfterChanges = [PsGitType]::new("]", [ConsoleColor]::Yellow)
-	[PsGitType]$AfterNoChanges = [PsGitType]::new("]", [ConsoleColor]::Yellow)
-	
-	[PsGitType]$AheadBy = [PsGitType]::new([char]0x2191, [ConsoleColor]::Green)
-	[PsGitType]$BehindBy = [PsGitType]::new([char]0x2193, [ConsoleColor]::Green)
-	
 	[PsGitType]$Before = [PsGitType]::new("[", [ConsoleColor]::Yellow)
-	[PsGitType]$Branch = [PsGitType]::new([ConsoleColor]::Green)
-
-	[PsGitType]$BeforeChanges = [PsGitType]::new(' ', [ConsoleColor]::White)
-	[PsGitType]$Separator = [PsGitType]::new(' | ', [ConsoleColor]::Yellow)
+	[PsGitType]$Separator = [PsGitType]::new(" |", [ConsoleColor]::Yellow)
+	[PsGitType]$After = [PsGitType]::new("]", [ConsoleColor]::Yellow)
+	
+	[PsGitType]$Branch = [PsGitType]::new([ConsoleColor]::Cyan)
+	[PsGitType]$BranchAhead = [PsGitType]::new([char]0x2191, [ConsoleColor]::Green)
+	[PsGitType]$BranchBehind = [PsGitType]::new([char]0x2193, [ConsoleColor]::Red)
+	[PsGitType]$BranchIdentical = [PsGitType]::new([char]0x2261, [ConsoleColor]::Cyan)
+	[PsGitType]$BranchBehindAndAhead = [PsGitType]::new([char]0x2195, [ConsoleColor]::Cyan)
 
 	[PsGitType]$StagedChanges = [PsGitType]::new([ConsoleColor]::White)
 	[PsGitType]$UnStagedChanges = [PsGitType]::new([ConsoleColor]::Red)
-
-	[Switch]$HideZero = $false
 }
 
 
@@ -83,37 +79,44 @@ function Write-Status {
 
         if($Status -and $Config) {
             $config.Before | Write-Text
-            $config.Branch | Write-Text ($Status.Branch + " ")
-            if($Status.AheadBy -gt 0) {
-                $config.AheadBy | Write-Text
-                $config.AheadBy | Write-Text ($Status.AheadBy + " ")
-            }
-            if($Status.BehindBy -gt 0) {
-                $config.BehindBy | Write-Text
-                $config.BehindBy | Write-Text ($Status.BehindBy + " ")
-            }
+			
+			if ($Status.IsTracking) {
+				if($Status.AheadBy -gt 0 -and $Status.BehindBy -gt 0) {
+					$config.BranchBehindAndAhead | Write-Text ($Status.Branch + " ")
+					$config.BranchBehindAndAhead | Write-Text
+					$config.BranchBehindAndAhead | Write-Text ($Status.AheadBy + $Status.BehindBy)
+				}
+				elseif($Status.AheadBy -gt 0) {
+					$config.BranchAhead | Write-Text ($Status.Branch + " ")
+					$config.BranchAhead | Write-Text
+					$config.BranchAhead | Write-Text ($Status.AheadBy)
+				}
+				elseif($Status.BehindBy -gt 0) {
+					$config.BranchBehind | Write-Text ($Status.Branch + " ")
+					$config.BranchBehind | Write-Text
+					$config.BranchBehind | Write-Text ($Status.BehindBy)
+				}
+				else {
+					$config.BranchIdentical | Write-Text ($Status.Branch + " ")
+					$config.BranchIdentical | Write-Text
+				}
+			}
+			else {
+				$config.Branch | Write-Text ($Status.Branch)
+			}
+			
 
             $StagedChanges = @($Status.Changes | Where { $_.Staged })
             $UnStagedChanges = @($Status.Changes | Where { !$_.Staged })
 
-            if(($StagedChanges.Length -gt 0 -or $UnStagedChanges.Length -gt 0)) {
-                $config.BeforeChanges | Write-Text
-            }
+			$added = @($StagedChanges | Where { $_.Change -eq "Added" }).Length
+			$modified = @($StagedChanges | Where { $_.Change -eq "Modified" -or $_.Change -eq "Renamed"}).Length
+			$removed = @($StagedChanges | Where { $_.Change -eq "Removed" }).Length
 
-            if(0 -ne $StagedChanges.Length) {
-                $count = @($StagedChanges | Where { $_.Change -eq "Added" }).Length
-                if(0 -lt $count -or !$config.HideZero) {
-                    $config.StagedChanges | Write-Text "+$count "
-                }
-                $count = @($StagedChanges | Where { $_.Change -eq "Modified" }).Length
-						+ @($StagedChanges | Where { $_.Change -eq "Renamed" }).Length
-                if(0 -lt $count -or !$config.HideZero) {
-                    $config.StagedChanges | Write-Text "~$count "
-                }
-                $count = @($StagedChanges | Where { $_.Change -eq "Removed" }).Length
-                if(0 -lt $count -or !$config.HideZero) {
-                    $config.StagedChanges | Write-Text "-$count"
-                }
+            if(0 -ne ($added + $modified + $removed)) {
+				$config.StagedChanges | Write-Text " +$added "
+				$config.StagedChanges | Write-Text "~$modified "
+				$config.StagedChanges | Write-Text "-$removed"
             }
 
             if(($StagedChanges.Length -gt 0 -and $UnStagedChanges.Length -gt 0)) {
@@ -121,31 +124,16 @@ function Write-Status {
             }
 
             $added = @($UnStagedChanges | Where { $_.Change -eq "Added" }).Length
-            $renamed = @($UnStagedChanges | Where { $_.Change -eq "Renamed" }).Length
-            $modified = @($UnStagedChanges | Where { $_.Change -eq "Modified" }).Length + $renamed
-            $removed = @($UnStagedChanges | Where { $_.Change -eq "Removed" }).Length + $renamed
+            $modified = @($UnStagedChanges | Where { $_.Change -eq "Modified" -or $_.Change -eq "Renamed" }).Length
+            $removed = @($UnStagedChanges | Where { $_.Change -eq "Removed"  -or $_.Change -eq "Renamed" }).Length
 
             if(0 -ne ($added + $modified + $removed)) {
-                if(0 -lt $added -or !$config.HideZero) {
-                    $config.UnStagedChanges | Write-Text "+$added "
-                }
-                if(0 -lt $modified -or !$config.HideZero) {
-                    $config.UnStagedChanges | Write-Text "~$modified "
-                }
-                if(0 -lt $removed -or !$config.HideZero) {
-                    $config.UnStagedChanges | Write-Text "-$removed"
-                }
+				$config.UnStagedChanges | Write-Text " +$added "
+				$config.UnStagedChanges | Write-Text "~$modified "
+				$config.UnStagedChanges | Write-Text "-$removed"
             }
 
-            if(($StagedChanges.Length -gt 0 -or $UnStagedChanges.Length -gt 0)) {
-                $config.AfterChanges | Write-Text
-            }
-            if(($StagedChanges.Length -eq 0 -and $UnStagedChanges.Length -eq 0)) {
-                $config.AfterNoChanges | Write-Text
-            }
-
-        } else {
-            $config.NoStatus | Write-Text
+            $config.After | Write-Text
         }
     }
 }
