@@ -25,9 +25,7 @@ PowerShellVersion = '2.0'
 FunctionsToExport = @(
     'Invoke-NullCoalescing',
     'Add-PoshGitToProfile',
-    'Get-PromptPath',
     'Write-GitStatus',
-    'Write-Prompt',
     'Write-VcsStatus',
     'Get-GitBranch',
     'Get-GitStatus',
@@ -49,7 +47,7 @@ FunctionsToExport = @(
 CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = @('GitPromptScriptBlock')
+VariablesToExport = @()
 
 # Aliases to export from this module
 AliasesToExport = @('??')

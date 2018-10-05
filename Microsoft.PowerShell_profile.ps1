@@ -119,11 +119,9 @@ $global:PSColor.File.Code.Pattern = '\.(java|c|cpp|cs|js|css|html|ui|h|hpp)$'
 
 # Prompt
 # ======
-$GitPromptSettings.DefaultPromptPath = ''
 function prompt {
     # Your non-prompt logic here
-    $prompt = Write-Prompt $(Get-PsEnvToolName) -ForegroundColor ([ConsoleColor]::Magenta)
-    $prompt = Write-Prompt $(Get-EnhancedPromptPath) -ForegroundColor ([ConsoleColor]::Gray)
-    $prompt += & $GitPromptScriptBlock
-    if ($prompt) { "$prompt " } else { " " }
+    Write-Host $(Get-PsEnvToolName) -NoNewLine -ForegroundColor ([ConsoleColor]::Magenta)
+    Write-Host $(Get-EnhancedPromptPath) -NoNewLine -ForegroundColor ([ConsoleColor]::Gray)
+    return "$ "
 }
