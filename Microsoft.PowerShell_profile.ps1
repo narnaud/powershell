@@ -116,6 +116,8 @@ Import-Module cd-extras
 Import-Module PSColor
 $global:PSColor.File.Code.Pattern = '\.(java|c|cpp|cs|js|css|html|ui|h|hpp)$'
 
+# PsGit
+Import-Module PsGit
 
 # Prompt
 # ======
@@ -123,5 +125,6 @@ function prompt {
     # Your non-prompt logic here
     Write-Host $(Get-PsEnvToolName) -NoNewLine -ForegroundColor ([ConsoleColor]::Magenta)
     Write-Host $(Get-EnhancedPromptPath) -NoNewLine -ForegroundColor ([ConsoleColor]::Gray)
+	Write-VcsStatus
     return "$ "
 }
