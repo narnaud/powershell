@@ -2,66 +2,66 @@
     HideZero = $false
     Before = PSObject @{
         Object = " ["
-        Foreground = (RgbColor "Yellow")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor Yellow
+        Background = $null
     }
     Branch = PSObject @{
         Object = ""
-        Foreground = (RgbColor "Green")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor Green
+        Background = $null
     }
     AheadBy = PSObject @{
-        Foreground = (RgbColor "Green")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor Green
+        Background = $null
         Object = [char]0x2191
     }
     BehindBy = PSObject @{
-        Foreground = (RgbColor "Green")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor Green
+        Background = $null
         Object = [char]0x2193
     }
     Index = PSObject @{
-        Foreground = (RgbColor "Green")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor Green
+        Background = $null
     }
     Separator = PSObject @{
-        Foreground = (RgbColor "Yellow")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor Yellow
+        Background = $null
         Object = " | "
     }
     Working = PSObject @{
-        Foreground = (RgbColor "Green")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor Green
+        Background = $null
     }
     BeforeChanges = PSObject @{
         Object = " "
-        Foreground = (RgbColor "White")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor White
+        Background = $null
     }
     AfterChanges = PSObject @{
         Object = "]"
-        Foreground = (RgbColor "Yellow")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor Yellow
+        Background = $null
     }
     StagedChanges = PSObject @{
         Object = ""
-        Foreground = (RgbColor "White")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor White
+        Background = $null
     }
     UnStagedChanges = PSObject @{
         Object = ""
-        Foreground = (RgbColor "Red")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor Red
+        Background = $null
     }
     AfterNoChanges = PSObject @{
         Object = "]"
-        Foreground = (RgbColor "Yellow")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor Yellow
+        Background = $null
     }
     NoStatus = PSObject @{
         Object = ""
-        Foreground = (RgbColor "White")
-        Background = (RgbColor $null)
+        Foreground = ConsoleColor White
+        Background = $null
     }
 }
 # SIG # Begin signature block

@@ -3,52 +3,52 @@ function Set-PromptSetting {
     [CmdletBinding()]
     param(
         [string]$AfterChangesText = "]:",
-        [PoshCode.Pansies.RgbColor]$AfterChangesForeground,
-        [PoshCode.Pansies.RgbColor]$AfterChangesBackground,
+        [ConsoleColor]$AfterChangesForeground,
+        [ConsoleColor]$AfterChangesBackground,
 
         [string]$AfterNoChangesText = "]:",
-        [PoshCode.Pansies.RgbColor]$AfterNoChangesForeground,
-        [PoshCode.Pansies.RgbColor]$AfterNoChangesBackground,
+        [ConsoleColor]$AfterNoChangesForeground,
+        [ConsoleColor]$AfterNoChangesBackground,
 
         [string]$AheadByText = '▲',
-        [PoshCode.Pansies.RgbColor]$AheadByForeground,
-        [PoshCode.Pansies.RgbColor]$AheadByBackground,
+        [ConsoleColor]$AheadByForeground,
+        [ConsoleColor]$AheadByBackground,
 
         [string]$BehindByText = '▼',
-        [PoshCode.Pansies.RgbColor]$BehindByForeground,
-        [PoshCode.Pansies.RgbColor]$BehindByBackground,
+        [ConsoleColor]$BehindByForeground,
+        [ConsoleColor]$BehindByBackground,
 
         [string]$BeforeText = "[",
-        [PoshCode.Pansies.RgbColor]$BeforeForeground,
-        [PoshCode.Pansies.RgbColor]$BeforeBackground,
+        [ConsoleColor]$BeforeForeground,
+        [ConsoleColor]$BeforeBackground,
 
         [string]$BranchText = $([char]0x03BB),
-        [PoshCode.Pansies.RgbColor]$BranchForeground,
-        [PoshCode.Pansies.RgbColor]$BranchBackground,
+        [ConsoleColor]$BranchForeground,
+        [ConsoleColor]$BranchBackground,
 
         [string]$BeforeChangesText = '',
-        [PoshCode.Pansies.RgbColor]$BeforeChangesForeground,
-        [PoshCode.Pansies.RgbColor]$BeforeChangesBackground,
+        [ConsoleColor]$BeforeChangesForeground,
+        [ConsoleColor]$BeforeChangesBackground,
 
         [string]$SeparatorText = '|',
-        [PoshCode.Pansies.RgbColor]$SeparatorForeground,
-        [PoshCode.Pansies.RgbColor]$SeparatorBackground,
+        [ConsoleColor]$SeparatorForeground,
+        [ConsoleColor]$SeparatorBackground,
 
-        [PoshCode.Pansies.RgbColor]$StagedChangesForeground,
-        [PoshCode.Pansies.RgbColor]$StagedChangesBackground,
+        [ConsoleColor]$StagedChangesForeground,
+        [ConsoleColor]$StagedChangesBackground,
 
-        [PoshCode.Pansies.RgbColor]$UnStagedChangesForeground,
-        [PoshCode.Pansies.RgbColor]$UnStagedChangesBackground,
+        [ConsoleColor]$UnStagedChangesForeground,
+        [ConsoleColor]$UnStagedChangesBackground,
 
         [string]$NoStatusText = ':',
-        [PoshCode.Pansies.RgbColor]$NoStatusForeground,
-        [PoshCode.Pansies.RgbColor]$NoStatusBackground,
+        [ConsoleColor]$NoStatusForeground,
+        [ConsoleColor]$NoStatusBackground,
 
-        [PoshCode.Pansies.RgbColor]$IndexForeground,
-        [PoshCode.Pansies.RgbColor]$IndexBackground,
+        [ConsoleColor]$IndexForeground,
+        [ConsoleColor]$IndexBackground,
 
-        [PoshCode.Pansies.RgbColor]$WorkingForeground,
-        [PoshCode.Pansies.RgbColor]$WorkingBackground,
+        [ConsoleColor]$WorkingForeground,
+        [ConsoleColor]$WorkingBackground,
 
         [Switch]$HideZero
     )
@@ -115,11 +115,11 @@ function Set-PromptSetting {
 
     #         [AllowNull()][AllowEmptyString()]
     #         [Parameter(ValueFromPipelineByPropertyName)]
-    #         [PoshCode.Pansies.RgbColor]$Foreground,
+    #         [ConsoleColor]$Foreground,
 
     #         [AllowNull()][AllowEmptyString()]
     #         [Parameter(ValueFromPipelineByPropertyName)]
-    #         [PoshCode.Pansies.RgbColor]$Background
+    #         [ConsoleColor]$Background
     #     )
     #     $Properties = @{} + $PSBoundParameters
     #     foreach($key in @($Properties.Keys)) {
