@@ -191,6 +191,7 @@ function Write-Status {
             }
 
             if(0 -ne $StagedChanges.Length) {
+				Write-Host $StagedChanges.Length
                 $count = @($StagedChanges | Where { $_.Change -eq "Added" }).Length
                 if(0 -lt $count -or !$config.HideZero) {
                     $config.StagedChanges | Write-Text "+$count "
@@ -210,19 +211,20 @@ function Write-Status {
                 $config.Separator | Write-Text
             }
 
-            if(0 -ne $UnStagedChanges.Length) {
-                $count = @($UnStagedChanges | Where { $_.Change -eq "Added" }).Length
-                if(0 -lt $count -or !$config.HideZero) {
-                    $config.UnStagedChanges | Write-Text "+$count "
+            $added = @($UnStagedChanges | Where { $_.Change -eq "Added" }).Length
+            $renamed = @($UnStagedChanges | Where { $_.Change -eq "Renamed" }).Length
+            $modified = @($UnStagedChanges | Where { $_.Change -eq "Modified" }).Length + $renamed
+            $removed = @($UnStagedChanges | Where { $_.Change -eq "Removed" }).Length + $renamed
+
+            if(0 -ne ($added + $modified + $removed)) {
+                if(0 -lt $added -or !$config.HideZero) {
+                    $config.UnStagedChanges | Write-Text "+$added "
                 }
-                $renamed = @($UnStagedChanges | Where { $_.Change -eq "Renamed" }).Length
-                $count = @($UnStagedChanges | Where { $_.Change -eq "Modified" }).Length  + $renamed
-                if(0 -lt $count -or !$config.HideZero) {
-                    $config.UnStagedChanges | Write-Text "~$count "
+                if(0 -lt $modified -or !$config.HideZero) {
+                    $config.UnStagedChanges | Write-Text "~$modified "
                 }
-                $count = @($UnStagedChanges | Where { $_.Change -eq "Removed" }).Length  + $renamed
-                if(0 -lt $count -or !$config.HideZero) {
-                    $config.UnStagedChanges | Write-Text "-$count"
+                if(0 -lt $removed -or !$config.HideZero) {
+                    $config.UnStagedChanges | Write-Text "-$removed"
                 }
             }
 
