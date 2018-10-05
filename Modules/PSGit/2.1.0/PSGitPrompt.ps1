@@ -196,16 +196,13 @@ function Write-Status {
                     $config.StagedChanges | Write-Text "+$count "
                 }
                 $count = @($StagedChanges | Where { $_.Change -eq "Modified" }).Length
+						+ @($StagedChanges | Where { $_.Change -eq "Renamed" }).Length
                 if(0 -lt $count -or !$config.HideZero) {
                     $config.StagedChanges | Write-Text "~$count "
                 }
                 $count = @($StagedChanges | Where { $_.Change -eq "Removed" }).Length
                 if(0 -lt $count -or !$config.HideZero) {
-                    $config.StagedChanges | Write-Text "-$count "
-                }
-                $count = @($StagedChanges | Where { $_.Change -eq "Renamed" }).Length
-                if(0 -lt $count -or !$config.HideZero) {
-                    $config.StagedChanges | Write-Text "%$count "
+                    $config.StagedChanges | Write-Text "-$count"
                 }
             }
 
@@ -218,17 +215,14 @@ function Write-Status {
                 if(0 -lt $count -or !$config.HideZero) {
                     $config.UnStagedChanges | Write-Text "+$count "
                 }
-                $count = @($UnStagedChanges | Where { $_.Change -eq "Modified" }).Length
+                $renamed = @($UnStagedChanges | Where { $_.Change -eq "Renamed" }).Length
+                $count = @($UnStagedChanges | Where { $_.Change -eq "Modified" }).Length  + $renamed
                 if(0 -lt $count -or !$config.HideZero) {
                     $config.UnStagedChanges | Write-Text "~$count "
                 }
-                $count = @($UnStagedChanges | Where { $_.Change -eq "Removed" }).Length
+                $count = @($UnStagedChanges | Where { $_.Change -eq "Removed" }).Length  + $renamed
                 if(0 -lt $count -or !$config.HideZero) {
-                    $config.UnStagedChanges | Write-Text "-$count "
-                }
-                $count = @($UnStagedChanges | Where { $_.Change -eq "Renamed" }).Length
-                if(0 -lt $count -or !$config.HideZero) {
-                    $config.UnStagedChanges | Write-Text "%$count "
+                    $config.UnStagedChanges | Write-Text "-$count"
                 }
             }
 

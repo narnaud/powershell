@@ -1,32 +1,32 @@
 @{
-    HideZero = $true
+    HideZero = $false
     Before = PSObject @{
-        Object = "["
-        Foreground = (RgbColor "White")
+        Object = " ["
+        Foreground = (RgbColor "Yellow")
         Background = (RgbColor $null)
     }
     Branch = PSObject @{
-        Object = "&Branch; "
-        Foreground = (RgbColor "Yellow")
+        Object = ""
+        Foreground = (RgbColor "Green")
         Background = (RgbColor $null)
     }
     AheadBy = PSObject @{
-        Foreground = (RgbColor "Yellow")
+        Foreground = (RgbColor "Green")
         Background = (RgbColor $null)
-        Object = [char]0x25B2
+        Object = [char]0x2191
     }
     BehindBy = PSObject @{
-        Foreground = (RgbColor "Yellow")
+        Foreground = (RgbColor "Green")
         Background = (RgbColor $null)
-        Object = [char]0x25BC
+        Object = [char]0x2193
     }
     Index = PSObject @{
         Foreground = (RgbColor "Green")
         Background = (RgbColor $null)
     }
     Separator = PSObject @{
-        Background = (RgbColor "DarkGreen")
-        Foreground = (RgbColor "White")
+        Foreground = (RgbColor "Yellow")
+        Background = (RgbColor $null)
         Object = " | "
     }
     Working = PSObject @{
@@ -34,13 +34,13 @@
         Background = (RgbColor $null)
     }
     BeforeChanges = PSObject @{
-        Object = "["
+        Object = " "
         Foreground = (RgbColor "White")
         Background = (RgbColor $null)
     }
     AfterChanges = PSObject @{
-        Object = "]:"
-        Foreground = (RgbColor "White")
+        Object = "]"
+        Foreground = (RgbColor "Yellow")
         Background = (RgbColor $null)
     }
     StagedChanges = PSObject @{
@@ -50,16 +50,16 @@
     }
     UnStagedChanges = PSObject @{
         Object = ""
-        Foreground = (RgbColor "White")
+        Foreground = (RgbColor "Red")
         Background = (RgbColor $null)
     }
     AfterNoChanges = PSObject @{
-        Object = "]:"
-        Foreground = (RgbColor "White")
+        Object = "]"
+        Foreground = (RgbColor "Yellow")
         Background = (RgbColor $null)
     }
     NoStatus = PSObject @{
-        Object = ":"
+        Object = ""
         Foreground = (RgbColor "White")
         Background = (RgbColor $null)
     }

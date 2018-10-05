@@ -403,7 +403,6 @@ function New-Repository {
 }
 
 . $PSScriptRoot\PSGitPrompt.ps1
-. $PSScriptRoot\PSGitPowerline.ps1
 
 # SIG # Begin signature block
 # MIIXzgYJKoZIhvcNAQcCoIIXvzCCF7sCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
