@@ -9,11 +9,12 @@ $AliasHash = @{
 	cc11  = 'clang++ -std=gnu++11'
 	cc14  = 'clang++ -std=gnu++14'
 	cc17  = 'clang++ -std=gnu++1z'
-	n     = 'start "C:\\Program Files\\Notepad++\\notepad++.exe"'
-	qtc   = 'C:\\Qt\\Tools\\QtCreator\\bin\\qtcreator.exe -client'
-	sh    = 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\sh.exe'
-	bash  = 'C:\\Users\\nicolas\\scoop\\apps\\git-with-openssh\\current\\bin\\bash.exe'
-	tools = 'start "C:\\Program Files\\Notepad++\\notepad++.exe" $ToolsFile'
+	n     = 'start "C:\Program Files\Notepad++\notepad++.exe"'
+	qtc   = 'C:\Qt\Tools\QtCreator\bin\qtcreator.exe -client'
+	sh    = 'C:\Users\nicolas\scoop\apps\git-with-openssh\current\bin\sh.exe'
+	bash  = 'C:\Users\nicolas\scoop\apps\git-with-openssh\current\bin\bash.exe'
+	tools = 'start "C:\Program Files\\Notepad++\notepad++.exe" $ToolsFile'
+	kdv   = 'C:\nicolas\dev\\kdabviewer\build-kdabviewer-x64-Release\bin\KDABViewer.exe'
 }
 
 
