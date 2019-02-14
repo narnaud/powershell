@@ -69,7 +69,7 @@ function Get-EnhancedPromptPath {
 Set-PSReadlineOption -BellStyle None # Remove the bell
 
 # Make sure to replace && with ; when copying git commands
-Set-PSReadlineKeyHandler -Key Ctrl+V `
+Set-PSReadlineKeyHandler -Chord Ctrl+v `
                          -BriefDescription SpecialGerritCopy `
                          -LongDescription "Replace && with ; in git specific command line" `
                          -ScriptBlock {
