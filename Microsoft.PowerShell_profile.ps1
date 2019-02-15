@@ -15,6 +15,7 @@ $AliasHash = @{
 	bash  = 'C:\Users\nicolas\scoop\apps\git-with-openssh\current\bin\bash.exe'
 	tools = 'start "C:\Program Files\\Notepad++\notepad++.exe" $ToolsFile'
 	kdv   = 'C:\nicolas\dev\\kdabviewer\build-kdabviewer-x64-Release\bin\KDABViewer.exe'
+	hash  = 'Get-FileHash'
 }
 
 
