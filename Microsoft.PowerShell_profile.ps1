@@ -4,7 +4,6 @@ $ToolsFile = "C:\nicolas\Config\tools\tools.json"
 $HomeDir = "C:\nicolas"
 $AliasHash = @{
 	e     = 'ii .'                      # Open explorer in the current directory
-	s     = 'Start-NewWindow $pwd.Path' # Start a new powershell window
 	la    = 'ls -Force'                # Like ls -al on unix
 	cc11  = 'clang++ -std=gnu++11'
 	cc14  = 'clang++ -std=gnu++14'
@@ -14,7 +13,7 @@ $AliasHash = @{
 	sh    = 'C:\Users\nicolas\scoop\apps\git-with-openssh\current\bin\sh.exe'
 	bash  = 'C:\Users\nicolas\scoop\apps\git-with-openssh\current\bin\bash.exe'
 	tools = 'start "C:\Program Files\\Notepad++\notepad++.exe" $ToolsFile'
-	kdv   = 'C:\nicolas\dev\\kdabviewer\build-kdabviewer-x64-Release\bin\KDABViewer.exe'
+	kdv   = 'C:\nicolas\dev\kdabviewer\build\bin\KDABViewer.exe'
 	hash  = 'Get-FileHash'
 }
 
@@ -29,13 +28,6 @@ Set-Location $HomeDir
 
 # Utility methods
 # ===============
-# Start a new powershell window in a specific directory
-function Start-NewWindow([String]$Path)
-{
-    $cline = "`"/c start powershell.exe -noexit -c `"Set-Location '{0}'" -f $Path
-    cmd $cline
-}
-
 # Returns a path with only 2 items, and ~ used for $HomeDir
 function Get-EnhancedPromptPath {
 	#$HomeDir = (Get-PsProvider 'FileSystem').home
