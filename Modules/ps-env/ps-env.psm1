@@ -248,38 +248,6 @@ function Use-Tool {
 }
 
 
-<#
-.SYNOPSIS
-
-Get the tool name currently set by Use-Tool.
-
-
-.DESCRIPTION
-
-This function returns the name of the current tool, with a prefix and suffix.
-It can be used for the prompt.
-#>
-function Get-PsEnvToolName {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory=$false)]
-        [String]
-        $Prefix = '[',
-		
-        [Parameter(Mandatory=$false)]
-        [String]
-        $Suffix = '] '
-    )
-
-    process {
-		if ($Global:PsEnvToolName) {
-			return $Prefix + $Global:PsEnvToolName + $Suffix
-		}
-		return $null
-    }
-}
-
-
 . $PSScriptRoot\UseTabExpansion.ps1
 
 ## Exported commands and aliases -----------------------------------------------
@@ -287,6 +255,5 @@ Set-Alias use Use-Tool
 
 Export-ModuleMember Set-PsEnvConfig
 Export-ModuleMember Use-Tool
-Export-ModuleMember Get-PsEnvToolName
 Export-ModuleMember TabExpansion
 Export-ModuleMember -Alias use
