@@ -261,6 +261,8 @@ by default, giving it several new abilities:
 
 If an unambiguous match is available then `cd` can change directory using an abbreviated path.
 This effectively changes a path given as, `p` into `p*` or `~/pr/pow/src` into `~/pr*/pow*/src*`.
+If you're not sure whether an unambiguous match is available then just hit tab to pick from a
+[list of potential matches](#enhanced-completion-for-cd-and-others) instead.
 
 ```pwsh
 [~]> cd pr
@@ -270,21 +272,42 @@ This effectively changes a path given as, `p` into `p*` or `~/pr/pow/src` into `
 [~/projects/cd-extras]> █
 ```
 
-Periods (`.`) are expanded around so a segment containing `.sdk` is expanded into `*.sdk*`.
+Word delimiters (`.`, `_`, `-` by [default](#configure)) are expanded around so a segment
+containing `.sdk` is expanded into `*.sdk*`.
 
 ```pwsh
 [~]> cd proj/pow/s/.sdk
 [~/projects/powershell/src/Microsoft.PowerShell.SDK]> █
 ```
 
-Pairs of periods are expanded between so a segment containing `s..32` is expanded into `s*32`.
+:point_right:
+Powershell interprets a hyphen at the start of an argument as a parameter name. So while you can
+do this...
+
+```pwsh
+[~/projects/powershell]> cd src/-unix
+[~/projects/PowerShell/src/powershell-unix]> █
+```
+
+... you need to escape this:
+
+```pwsh
+[~/projects/powershell/src]> cd -unix
+Set-LocationEx: A parameter cannot be found that matches parameter name 'unix'.
+
+[~/projects/powershell/src]> cd `-unix # backtick escapes the hypen
+[~/projects/PowerShell/src/powershell-unix]> █
+```
+
+Pairs of periods are expanded between so, for example, a segment containing `s..32` is expanded
+into `s*32`.
 
 ```pwsh
 [~]> cd /w/s..32/d/et
 [C:/Windows/System32/drivers/etc]> █
 ```
 
-Directories in [`CD_PATH`](#cd-path) will be matched.
+Directories in [`CD_PATH`](#cd-path) will be also be shortened.
 
 ```pwsh
 [C:/]> setocd CD_PATH ~/projects
@@ -303,9 +326,6 @@ True
 [~/projects/PowerShell/src]> .sdk
 [~/projects/PowerShell/src/Microsoft.PowerShell.SDK]> █
 ```
-
-If you're not sure whether an unambiguous match is available then just hit tab to pick from a
-[list of potential matches](#enhanced-completion-for-cd-and-others) instead.
 
 
 ## Multi-dot `cd`
@@ -354,10 +374,10 @@ You can also use the alias `cd:` or the explicit `ReplaceWith` parameter of `Set
 
 # Enhanced completion for `cd` and others
 
-`cd`, `pushd`, `ls`, `Get-Item` and `Invoke-Item` (by default) provide enhanced completion,
-expanding all path segments in one go so that you don't have to individually tab (⇥) through
-each one. The path shortening logic is provided by `Expand-Path` and works as [described above
-](#path-shortening).
+`cd-extras` provides enhanced completion for `cd`, `pushd`, `ls`, `Get-Item` and `Invoke-Item`
+by default, expanding all path segments in one go so that you don't have to individually tab (⇥)
+through each one. The path shortening logic is provided by `Expand-Path` and works as
+[described above](#path-shortening).
 
 ```pwsh
 [~]> cd /w/s/dr⇥⇥
@@ -380,8 +400,8 @@ Paths within [`$cde.CD_PATH`](#cd-path) are included in the completion results.
 
 ## Single and double periods
 
-Periods (`.`) are expanded around so, for example, a segment containing `.sdk` is expanded into
-`*.sdk*`.
+Word delimiters (`.`, `_`, `-` [by default](#configure)) are expanded around so, for example, a
+segment containing `.sdk` is expanded into `*.sdk*`.
 
 ```pwsh
 [~]> cd proj/pow/s/.sdk⇥
@@ -502,8 +522,8 @@ File: C:\Users\Nick\projects\PowerShell\README.md
 ```
 
 :point_right:
-You can skip tab completion altogether and use [Expand-Path](#Additional-helpers) directly if
-you know exactly what you're looking for.
+You can skip tab completion altogether and use [Expand-Path](#expand-path-xpa) directly if you
+know exactly what you're looking for.
 
 ```pwsh
 [~]> xpa ~/pr/po/r.md | to bat
@@ -518,9 +538,11 @@ File: C:\Users\Nick\projects\PowerShell\README.md
 
 ## Colourised completions
 
-The `ColorCompletion` option (`setocd ColorCompletion`) enables colourisation of completions
-in the filesystem provider via [DirColors][1] or via your own global `Format-ColorizedFilename`
-function.
+The `ColorCompletion` [option](#configure) enables colourisation of completions in the filesystem
+provider via [DirColors][1] or via your own global `Format-ColorizedFilename` function.
+
+:point_right:
+`ColorCompletion` is off by default. Enable it on with `setocd ColorCompletion`.
 
 
 # AUTO CD
@@ -599,8 +621,8 @@ n Name      Path
 [~/documents/WindowsPowerShell]> █
 ```
 
-[Tab-completion](#enhanced-completion-for-cd-and-others) and [path shortening](#path-shortening)
-work with `CD_PATH` directories.
+[Tab-completion](#enhanced-completion-for-cd-and-others), [path shortening](#path-shortening) and
+[Expand-Path](#expand-path-xpa) work with `CD_PATH` directories.
 
 `CD_PATH`s are _not_ searched when an absolute or relative path is given.
 
@@ -624,7 +646,7 @@ command will prefer the former.
 ```
 
 :point_right:
-Also note that the value of `CD_PATH` is an array, not a delimited string as in bash.
+The value of `CD_PATH` is an array, not a delimited string as in bash.
 ```pwsh
 [~]> setocd CD_PATH ~/Documents/, ~/Downloads
 [~]> $cde.CD_PATH
@@ -776,6 +798,8 @@ Import-Module cd-extras/cd-extras/cd-extras.psd1 # yep, three :D
   - If specified, `cd` with no arguments will change into the given directory.
 - _CD_PATH_: `[string[]] = @()`
   - Paths to be searched by `cd` and tab completion. An array, not a delimited string.
+- _WordDelimiters_ : `[string[]] = '.', '_', '-'`
+  - Word boundaries within path segments. For example, `.foo` will be expanded into `*.foo*`.
 - _IndexedCompletion_: `[bool] = $true (if MenuComplete key bound)`
   - If truthy, indexes are offered as completions for `up`, `cd+` and `cd-` with full paths
     displayed in the menu.
@@ -788,9 +812,8 @@ Import-Module cd-extras/cd-extras/cd-extras.psd1 # yep, three :D
 - _ColorCompletion_ : `[bool] = false`
   - When truthy, dir/path/file completions will be coloured by `Format-ColorizedFilename`, if
     available.
-- _MaxMenuLength_ : `[int] = 60`
-  - Truncate completion menu items to this length. Column layout may break below about 60
-  characters.
+- _MaxMenuLength_ : `[int] = 35`
+  - Truncate completion menu items to this length.
 - _MaxCompletions_ : `[int] = 99`
   - Limit the number of dir/path/file completions offered. Should probably be at least one less
   than `(Get-PSReadLineOption).CompletionQueryItems`.
