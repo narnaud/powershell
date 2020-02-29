@@ -31,10 +31,11 @@ $AliasHash = @{
 	cc17  = 'clang++ -std=gnu++1z'
 	n     = 'start "C:\Program Files\Notepad++\notepad++.exe"'
 	qtc   = 'C:\Qt\Tools\QtCreator\bin\qtcreator.exe -client'
-	sh    = 'C:\Users\nicolas\scoop\apps\git-with-openssh\current\bin\sh.exe'
-	bash  = 'C:\Users\nicolas\scoop\apps\git-with-openssh\current\bin\bash.exe'
-	tools = 'start "C:\Program Files\\Notepad++\notepad++.exe" $ToolsFile'
+	sh    = 'C:\Users\nicolas\scoop\apps\git\current\bin\sh.exe'
+	bash  = 'C:\Users\nicolas\scoop\apps\git\current\bin\bash.exe'
+	tools = 'code $ToolsFile'
 	hash  = 'Get-FileHash'
+	l     = 'git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit --date=relative'
 }
 Import-Module posh-alias
 $AliasHash.GetEnumerator() | ForEach-Object{ Add-Alias $_.key $_.value }
@@ -54,3 +55,9 @@ Import-Module ps-env
 Set-PsEnvConfig $ToolsFile
 
 Start-Service ssh-agent
+
+# Chocolatey profile
+$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+if (Test-Path($ChocolateyProfile)) {
+  Import-Module "$ChocolateyProfile"
+}
