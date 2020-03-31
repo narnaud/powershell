@@ -22,6 +22,21 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
 			}
 		}
 	}
+
+	Set-PSReadLineKeyHandler -Key f `
+							 -BriefDescription rmrfHandling `
+							 -LongDescription "Transform unix 'rm -rf' into powershel 'rm -r -fo'" `
+							 -ScriptBlock {
+		$line = $null
+		$cursor = $null
+		[Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+
+		if ($line -eq "rm -r") {
+			[Microsoft.PowerShell.PSConsoleReadLine]::Replace(0, 5, "rm -r -fo")
+		} else {
+			[Microsoft.PowerShell.PSConsoleReadLine]::Insert("f")
+		}
+	}
 }
 
 $AliasHash = @{
