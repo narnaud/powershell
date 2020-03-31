@@ -36,6 +36,9 @@ $AliasHash = @{
 	tools = 'code $ToolsFile'
 	hash  = 'Get-FileHash'
 	l     = 'git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit --date=relative'
+	s     = 'git status'
+	d     = 'git diff'
+	xhost = 'sudo code C:\Windows\System32\Drivers\etc\hosts'
 }
 Import-Module posh-alias
 $AliasHash.GetEnumerator() | ForEach-Object{ Add-Alias $_.key $_.value }
