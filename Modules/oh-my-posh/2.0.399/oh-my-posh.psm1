@@ -12,7 +12,7 @@ function Set-Prompt {
     Import-Module $sl.CurrentThemeLocation -Force
 
     [ScriptBlock]$Prompt = {
-        $lastCommandFailed = $global:error.Count -gt $sl.ErrorCount
+        $lastCommandFailed = ($global:error.Count -gt $sl.ErrorCount) -or -not $?
         $sl.ErrorCount = $global:error.Count
 
         #Start the vanilla posh-git when in a vanilla window, else: go nuts
@@ -26,7 +26,7 @@ function Set-Prompt {
 
         if($sl.Options.ConsoleTitle) {
             $location = Get-Location
-            $folder = (Get-Item $location.Path).Name
+            $folder = (Get-ChildItem | Select-Object -First 1).Parent.BaseName
             $prompt += "$([char]27)]2;$($folder)$([char]7)"
             if ($location.Provider.Name -eq "FileSystem") {
                 $prompt += "$([char]27)]9;9;`"$($location.Path)`"$([char]7)"

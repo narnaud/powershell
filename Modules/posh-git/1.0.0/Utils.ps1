@@ -33,13 +33,13 @@ function Invoke-Utf8ConsoleCommand([ScriptBlock]$cmd) {
         # error records if the user has set $ErrorActionPreference to Stop. Override that value in this scope.
         $ErrorActionPreference = 'Continue'
         if ($currentEncoding.IsSingleByte) {
-            [Console]::OutputEncoding = [Text.Encoding]::UTF8
+            try { [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch [System.IO.IOException] {}
         }
         & $cmd
     }
     finally {
         if ($currentEncoding.IsSingleByte) {
-            [Console]::OutputEncoding = $currentEncoding
+            try { [Console]::OutputEncoding = $currentEncoding } catch [System.IO.IOException] {}
         }
 
         # Clear out stderr output that was added to the $Error collection, putting those errors in a module variable
@@ -280,7 +280,7 @@ function Get-PathStringComparison {
 
 function Get-PromptPath {
     $settings = $global:GitPromptSettings
-    $abbrevHomeDir = $settings -and $settings.DefaultPromptAbbreviateHomeDirectory
+    $stringComparison = Get-PathStringComparison
 
     # A UNC path has no drive so it's better to use the ProviderPath e.g. "\\server\share".
     # However for any path with a drive defined, it's better to use the Path property.
@@ -288,13 +288,28 @@ function Get-PromptPath {
     # The latter is more desirable.
     $pathInfo = $ExecutionContext.SessionState.Path.CurrentLocation
     $currentPath = if ($pathInfo.Drive) { $pathInfo.Path } else { $pathInfo.ProviderPath }
+    if (!$settings -or !$currentPath -or $currentPath.Equals($Home, $stringComparison)) {
+        return $currentPath
+    }
 
-    $stringComparison = Get-PathStringComparison
+    $abbrevHomeDir = $settings.DefaultPromptAbbreviateHomeDirectory
+    $abbrevGitDir = $settings.DefaultPromptAbbreviateGitDirectory
 
-    # Abbreviate path by replacing beginning of path with ~ *iff* the path is under the user's home dir
-    if ($abbrevHomeDir -and $currentPath -and !$currentPath.Equals($Home, $stringComparison) -and
-        $currentPath.StartsWith($Home, $stringComparison)) {
+    # Look up the git root
+    if ($abbrevGitDir) {
+        $gitPath = Get-GitDirectory
+        # Up one level from `.git`
+        if ($gitPath) { $gitPath = Split-Path $gitPath -Parent }
+    }
 
+    # Abbreviate path under a git repository as "<repo-name>:<relative-path>"
+    if ($abbrevGitDir -and $gitPath -and $currentPath.StartsWith($gitPath, $stringComparison)) {
+        $gitName = Split-Path $gitPath -Leaf
+        $relPath = if ($currentPath -eq $gitPath) { "" } else { $currentPath.SubString($gitPath.Length + 1) }
+        $currentPath = "$gitName`:$relPath"
+    }
+    # Abbreviate path under the user's home dir as "~<relative-path>"
+    elseif ($abbrevHomeDir -and $currentPath.StartsWith($Home, $stringComparison)) {
         $currentPath = "~" + $currentPath.SubString($Home.Length)
     }
 

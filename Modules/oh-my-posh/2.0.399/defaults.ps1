@@ -9,6 +9,7 @@ function Get-ThemesLocation {
 
 $global:ThemeSettings = New-Object -TypeName PSObject -Property @{
     CurrentUser          = [System.Environment]::UserName
+    CurrentHostname      = [System.Environment]::MachineName
     CurrentThemeLocation = "$PSScriptRoot\Themes\Agnoster.psm1"
     MyThemesLocation     = Get-ThemesLocation
     ErrorCount           = 0
@@ -45,6 +46,8 @@ $global:ThemeSettings = New-Object -TypeName PSObject -Property @{
         PathSeparator                  = [System.IO.Path]::DirectorySeparatorChar
         VirtualEnvSymbol               = [char]::ConvertFromUtf32(0xE606)
         HomeSymbol                     = '~'
+        RootSymbol                     = '#'
+        UNCSymbol                      = '§'
     }
     Colors               = @{
         GitDefaultColor                         = [ConsoleColor]::DarkGreen
@@ -67,8 +70,8 @@ $global:ThemeSettings = New-Object -TypeName PSObject -Property @{
         VirtualEnvForegroundColor               = [ConsoleColor]::White
         VirtualEnvBackgroundColor               = [ConsoleColor]::Red
     }
-    Options = @{
-        ConsoleTitle = $true
+    Options              = @{
+        ConsoleTitle  = $true
         OriginSymbols = $false
     }
 }

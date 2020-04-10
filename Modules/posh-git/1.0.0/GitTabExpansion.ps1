@@ -6,6 +6,8 @@ $Global:GitTabSettings = New-Object PSObject -Property @{
     KnownAliases = @{
         '!f() { exec vsts code pr "$@"; }; f' = 'vsts.pr'
     }
+    EnableLogging = $false
+    LogPath = Join-Path ([System.IO.Path]::GetTempPath()) posh-git_tabexp.log
 }
 
 $subcommands = @{
@@ -54,8 +56,8 @@ function script:gitCmdOperations($commands, $command, $filter) {
 $script:someCommands = @('add','am','annotate','archive','bisect','blame','branch','bundle','checkout','cherry',
                          'cherry-pick','citool','clean','clone','commit','config','describe','diff','difftool','fetch',
                          'format-patch','gc','grep','gui','help','init','instaweb','log','merge','mergetool','mv',
-                         'notes','prune','pull','push','rebase','reflog','remote','rerere','reset','revert','rm',
-                         'shortlog','show','stash','status','submodule','svn','tag','whatchanged', 'worktree')
+                         'notes','prune','pull','push','rebase','reflog','remote','rerere','reset','restore','revert','rm',
+                         'shortlog','show','stash','status','submodule','svn','switch','tag','whatchanged', 'worktree')
 
 if ((($PSVersionTable.PSVersion.Major -eq 5) -or $IsWindows) -and ($script:GitVersion -ge [System.Version]'2.16.2')) {
     $script:someCommands += 'update-git-for-windows'
@@ -190,6 +192,10 @@ function script:gitCheckoutFiles($GitStatus, $filter) {
     gitFiles $filter (@($GitStatus.Working.Unmerged) + @($GitStatus.Working.Modified) + @($GitStatus.Working.Deleted))
 }
 
+function script:gitDeleted($GitStatus, $filter) {
+    gitFiles $filter $GitStatus.Working.Deleted
+}
+
 function script:gitDiffFiles($GitStatus, $filter, $staged) {
     if ($staged) {
         gitFiles $filter $GitStatus.Index.Modified
@@ -203,8 +209,13 @@ function script:gitMergeFiles($GitStatus, $filter) {
     gitFiles $filter $GitStatus.Working.Unmerged
 }
 
-function script:gitDeleted($GitStatus, $filter) {
-    gitFiles $filter $GitStatus.Working.Deleted
+function script:gitRestoreFiles($GitStatus, $filter, $staged) {
+    if ($staged) {
+        gitFiles $filter (@($GitStatus.Index.Added) + @($GitStatus.Index.Modified) + @($GitStatus.Index.Deleted))
+    }
+    else {
+        gitFiles $filter (@($GitStatus.Working.Unmerged) + @($GitStatus.Working.Modified) + @($GitStatus.Working.Deleted))
+    }
 }
 
 function script:gitAliases($filter) {
@@ -249,10 +260,16 @@ function script:expandShortParams($hash, $cmd, $filter) {
 }
 
 function script:expandParamValues($cmd, $param, $filter) {
-    $gitParamValues[$cmd][$param].Trim() -split ' ' |
-        Where-Object { $_ -like "$filter*" } |
-        Sort-Object |
-        ForEach-Object { -join ("--", $param, "=", $_) }
+    $paramValues = $gitParamValues[$cmd][$param]
+
+    $completions = if ($paramValues -is [scriptblock]) {
+        & $paramValues $filter
+    }
+    else {
+        $paramValues.Trim() -split ' ' | Where-Object { $_ -like "$filter*" } | Sort-Object
+    }
+
+    $completions | ForEach-Object { -join ("--", $param, "=", $_) }
 }
 
 function Expand-GitCommand($Command) {
@@ -373,6 +390,18 @@ function GitTabExpansionInternal($lastBlock, $GitStatus = $null) {
             gitCheckoutFiles $GitStatus $matches['files']
         }
 
+        # Handles git restore -s <ref> - must come before the next regex case
+        "^restore.* (?-i)-s\s*(?<ref>\S*)$" {
+            gitBranches $matches['ref'] $true
+            gitTags $matches['ref']
+            break
+        }
+
+        # Handles git restore <path>
+        "^restore(?:.* (?<staged>(?:(?-i)-S|--staged))|.*) (?<files>\S*)$" {
+            gitRestoreFiles $GitStatus $matches['files'] $matches['staged']
+        }
+
         # Handles git rm <path>
         "^rm.* (?<index>\S*)$" {
             gitDeleted $GitStatus $matches['index']
@@ -388,8 +417,8 @@ function GitTabExpansionInternal($lastBlock, $GitStatus = $null) {
             gitMergeFiles $GitStatus $matches['files']
         }
 
-        # Handles git checkout <ref>
-        "^(?:checkout).* (?<ref>\S*)$" {
+        # Handles git checkout|switch <ref>
+        "^(?:checkout|switch).* (?<ref>\S*)$" {
             & {
                 gitBranches $matches['ref'] $true
                 gitRemoteUniqueBranches $matches['ref']
@@ -440,41 +469,62 @@ function GitTabExpansionInternal($lastBlock, $GitStatus = $null) {
         {
             expandShortParams $shortVstsParams $matches['cmd'] $matches['shortparam']
         }
-
     }
 }
 
-$PowerTab_RegisterTabExpansion = if (Get-Module -Name powertab) { Get-Command Register-TabExpansion -Module powertab -ErrorAction SilentlyContinue }
-if ($PowerTab_RegisterTabExpansion) {
-    & $PowerTab_RegisterTabExpansion "git.exe" -Type Command {
-        param($Context, [ref]$TabExpansionHasOutput, [ref]$QuoteSpaces)  # 1:
+function WriteTabExpLog([string] $Message) {
+    if (!$global:GitTabSettings.EnableLogging) { return }
 
-        $line = $Context.Line
+    $timestamp = Get-Date -Format HH:mm:ss
+    "[$timestamp] $Message" | Out-File -Append $global:GitTabSettings.LogPath
+}
+
+if (!$UseLegacyTabExpansion -and ($PSVersionTable.PSVersion.Major -ge 6)) {
+    Microsoft.PowerShell.Core\Register-ArgumentCompleter -CommandName git,tgit,gitk -Native -ScriptBlock {
+        param($wordToComplete, $commandAst, $cursorPosition)
+
+        # The PowerShell completion has a habit of stripping the trailing space when completing:
+        # git checkout <tab>
+        # The Expand-GitCommand expects this trailing space, so pad with a space if necessary.
+        $padLength = $cursorPosition - $commandAst.Extent.StartOffset
+        $textToComplete = $commandAst.ToString().PadRight($padLength, ' ').Substring(0, $padLength)
+
+        WriteTabExpLog "Expand: command: '$($commandAst.Extent.Text)', padded: '$textToComplete', padlen: $padLength"
+        Expand-GitCommand $textToComplete
+    }
+}
+else {
+    $PowerTab_RegisterTabExpansion = if (Get-Module -Name powertab) { Get-Command Register-TabExpansion -Module powertab -ErrorAction SilentlyContinue }
+    if ($PowerTab_RegisterTabExpansion) {
+        & $PowerTab_RegisterTabExpansion git -Type Command {
+            param($Context, [ref]$TabExpansionHasOutput, [ref]$QuoteSpaces)
+
+            $line = $Context.Line
+            $lastBlock = [regex]::Split($line, '[|;]')[-1].TrimStart()
+            $TabExpansionHasOutput.Value = $true
+            WriteTabExpLog "PowerTab expand: '$lastBlock'"
+            Expand-GitCommand $lastBlock
+        }
+
+        return
+    }
+
+    function TabExpansion($line, $lastWord) {
         $lastBlock = [regex]::Split($line, '[|;]')[-1].TrimStart()
-        $TabExpansionHasOutput.Value = $true
-        Expand-GitCommand $lastBlock
-    }
-    return
-}
+        $msg = "Legacy expand: '$lastBlock'"
 
-if (Test-Path Function:\TabExpansion) {
-    Rename-Item Function:\TabExpansion TabExpansionBackup
-}
-
-function TabExpansion($line, $lastWord) {
-    $lastBlock = [regex]::Split($line, '[|;]')[-1].TrimStart()
-
-    switch -regex ($lastBlock) {
-        # Execute git tab completion for all git-related commands
-        "^$(Get-AliasPattern git) (.*)" { Expand-GitCommand $lastBlock }
-        "^$(Get-AliasPattern tgit) (.*)" { Expand-GitCommand $lastBlock }
-        "^$(Get-AliasPattern gitk) (.*)" { Expand-GitCommand $lastBlock }
-
-        # Fall back on existing tab expansion
-        default {
-            if (Test-Path Function:\TabExpansionBackup) {
-                TabExpansionBackup $line $lastWord
-            }
+        switch -regex ($lastBlock) {
+            # Execute git tab completion for all git-related commands
+            "^$(Get-AliasPattern git) (.*)"  { WriteTabExpLog $msg; Expand-GitCommand $lastBlock }
+            "^$(Get-AliasPattern tgit) (.*)" { WriteTabExpLog $msg; Expand-GitCommand $lastBlock }
+            "^$(Get-AliasPattern gitk) (.*)" { WriteTabExpLog $msg; Expand-GitCommand $lastBlock }
         }
     }
+}
+
+# Handles Remove-GitBranch -Name parameter auto-completion using the built-in mechanism for cmdlet parameters
+Microsoft.PowerShell.Core\Register-ArgumentCompleter -CommandName Remove-GitBranch -ParameterName Name -ScriptBlock {
+    param($Command, $Parameter, $WordToComplete, $CommandAst, $FakeBoundParams)
+
+    gitBranches $WordToComplete $true
 }

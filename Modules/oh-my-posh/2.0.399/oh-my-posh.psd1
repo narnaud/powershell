@@ -9,7 +9,7 @@
 @{
 
 # Version number of this module.
-ModuleVersion = '2.0.342'
+ModuleVersion = '2.0.399'
 
 # Script module or binary module file associated with this manifest.
 RootModule = 'oh-my-posh.psm1'
@@ -52,7 +52,7 @@ FunctionsToExport = @('Show-Colors',
                       'Set-Theme',
                       'Get-VCSStatus',
                       'Get-VcsInfo',
-                      'Get-Drive',
+                      'Get-FormattedRootLocation',
                       'Get-ShortPath',
                       'Get-FullPath',
                       'Set-CursorForRightBlockWrite',
@@ -63,7 +63,8 @@ FunctionsToExport = @('Show-Colors',
                       'Test-Administrator',
                       'Get-ComputerName',
                       'Set-Newline',
-                      'Get-ThemesLocation')
+                      'Get-ThemesLocation'
+                      'Set-Prompt')
 
 # Private data to pass to the module specified in RootModule. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{

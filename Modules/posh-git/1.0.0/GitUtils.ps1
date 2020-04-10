@@ -82,8 +82,8 @@ function Get-GitBranch($gitDir = $(Get-GitDirectory), [Diagnostics.Stopwatch]$sw
         else {
             if (Test-Path $gitDir/rebase-apply) {
                 dbg 'Found rebase-apply' $sw
-                $step = "$(Get-Content $gitDir/rebase-merge/next)"
-                $total = "$(Get-Content $gitDir/rebase-merge/last)"
+                $step = "$(Get-Content $gitDir/rebase-apply/next)"
+                $total = "$(Get-Content $gitDir/rebase-apply/last)"
 
                 if (Test-Path $gitDir/rebase-apply/rebasing) {
                     dbg 'Found rebase-apply/rebasing' $sw
@@ -211,16 +211,17 @@ function Get-GitStatus {
         [Parameter(Position=0)]
         $GitDir = (Get-GitDirectory),
 
-        # If specified, overrides $GitPromptSettings.EnablePromptStatus when it
-        # is set to $false.
+        # If specified, overrides $GitPromptSettings.EnableFileStatus and
+        # $GitPromptSettings.EnablePromptStatus when they are set to $false.
         [Parameter()]
         [switch]
         $Force
     )
 
-    $settings = $Global:GitPromptSettings
-    $enabled = $Force -or !$settings -or $settings.EnablePromptStatus
-    if ($enabled -and $GitDir) {
+    $settings = if ($global:GitPromptSettings) { $global:GitPromptSettings } else { [PoshGitPromptSettings]::new() }
+
+    $promptStatusEnabled = $Force -or $settings.EnablePromptStatus
+    if ($promptStatusEnabled -and $GitDir) {
         if ($settings.Debug) {
             $sw = [Diagnostics.Stopwatch]::StartNew(); Write-Host ''
         }
@@ -242,7 +243,8 @@ function Get-GitStatus {
         $filesUnmerged = New-Object System.Collections.Generic.List[string]
         $stashCount = 0
 
-        if ($settings.EnableFileStatus -and !$(InDotGitOrBareRepoDir $GitDir) -and !$(InDisabledRepository)) {
+        $fileStatusEnabled = $Force -or $settings.EnableFileStatus
+        if ($fileStatusEnabled -and !$(InDotGitOrBareRepoDir $GitDir) -and !$(InDisabledRepository)) {
             if ($null -eq $settings.EnableFileStatusFromCache) {
                 $settings.EnableFileStatusFromCache = $null -ne (Get-Module GitStatusCachePoshClient)
             }
@@ -402,8 +404,8 @@ function InDotGitOrBareRepoDir([string][ValidateNotNullOrEmpty()]$GitDir) {
     $res
 }
 
-function Get-AliasPattern($exe) {
-   $aliases = @($exe) + @(Get-Alias | Where-Object { $_.Definition -eq $exe } | Select-Object -Exp Name)
+function Get-AliasPattern($cmd) {
+    $aliases = @($cmd) + @(Get-Alias | Where-Object { $_.Definition -eq $cmd } | Select-Object -Exp Name)
    "($($aliases -join '|'))"
 }
 
@@ -452,7 +454,7 @@ function Get-AliasPattern($exe) {
 
         Where-Object { $_ -match $Pattern }
 
-    ## Recovering Deleted Branches
+    Recovering Deleted Branches
 
     If you wind up deleting a branch you didn't intend to, you can easily recover it with the info provided by Git during the delete. For instance, let's say you realized you didn't want to delete the branch 'feature/exp1'. In the output of this command, you should see a deletion entry for this branch that looks like:
 
