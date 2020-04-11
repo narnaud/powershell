@@ -1,7 +1,6 @@
 #requires -Version 2 -Modules posh-git
 
 function Get-EnhancedPromptPath {
-	#$HomeDir = (Get-PsProvider 'FileSystem').home
 	if($pwd -like $HomeDir) { return '~' }
 
 	$currentPath = split-path $pwd -leaf

@@ -1,3 +1,5 @@
+$HomeDir = "C:\nicolas"
+
 if ($PSVersionTable.PSVersion.Major -lt 7) {
 	# Set-PSReadlineKeyHandler -Key Tab -Function Complete # Unix completion
 	Set-PSReadlineOption -BellStyle None # Remove the bell
@@ -55,8 +57,8 @@ Import-Module posh-alias
 $AliasHash.GetEnumerator() | ForEach-Object{ Add-Alias $_.key $_.value }
 
 $cde = @{
-	NOARG_CD = "C:\nicolas"
-	CD_PATH = "C:\nicolas\dev"
+	NOARG_CD = $HomeDir
+	CD_PATH = "$HomeDir\dev"
 }
 Import-Module cd-extras
 
