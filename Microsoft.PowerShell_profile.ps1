@@ -1,5 +1,3 @@
-Set-Location "C:\nicolas"
-
 if ($PSVersionTable.PSVersion.Major -lt 7) {
 	# Set-PSReadlineKeyHandler -Key Tab -Function Complete # Unix completion
 	Set-PSReadlineOption -BellStyle None # Remove the bell

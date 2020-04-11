@@ -8,58 +8,57 @@
     "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
 	"launchMode": "maximized",
 
-    "profiles":
-    [
+    "profiles": {
+        "defaults":
         {
-            // Make changes here to the powershell.exe profile
-            "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-            "name": "Windows PowerShell",
-            "commandline": "powershell.exe -nologo",
             "fontFace":  "Delugia Nerd Font",
-			"colorScheme": "Chester",
-            "hidden": false
+            "colorScheme": "Chester"
         },
-        {
-            // Make changes here to the cmd.exe profile
-            "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-            "name": "Windows Cmd",
-            "commandline": "C:\\Users\\nicolas\\scoop\\shims\\yori.EXE",
-            "fontFace":  "Delugia Nerd Font",
-			"colorScheme": "Chester",
-            "hidden": false
-        },
-        {
-            "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
-            "hidden": true,
-            "name": "Azure Cloud Shell",
-            "source": "Windows.Terminal.Azure"
-        }
-    ],
+        "list":
+        [
+            {
+                // Make changes here to the powershell.exe profile
+                "startingDirectory": "C:/nicolas",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "name": "Windows PowerShell",
+                "commandline": "powershell.exe -nologo",
+                "hidden": false
+            },
+            {
+                // Make changes here to the cmd.exe profile
+                "startingDirectory": "C:/nicolas",
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "name": "Windows Cmd",
+                "commandline": "C:\\Users\\nicolas\\scoop\\shims\\yori.EXE",
+                "hidden": false
+            }
+        ]
+    },
 
     // Add custom color schemes to this array
     "schemes": [
-        {
-            "name": "Chester",
-            "black": "#080200",
-            "red": "#fa5e5b",
-            "green": "#16c98d",
-            "yellow": "#ffc83f",
-            "blue": "#288ad6",
-            "purple": "#d34590",
-            "cyan": "#28ddde",
-            "white": "#e7e7e7",
-            "brightBlack": "#6f6b68",
-            "brightRed": "#fa5e5b",
-            "brightGreen": "#16c98d",
-            "brightYellow": "#feef6d",
-            "brightBlue": "#278ad6",
-            "brightPurple": "#d34590",
-            "brightCyan": "#27dede",
-            "brightWhite": "#ffffff",
-            "background": "#2c3643",
-            "foreground": "#ffffff"
-        }
-    ],
+		{
+			"name": "Chester",
+			"black": "#080200",
+			"red": "#fa5e5b",
+			"green": "#16c98d",
+			"yellow": "#ffc83f",
+			"blue": "#288ad6",
+			"purple": "#d34590",
+			"cyan": "#28ddde",
+			"white": "#e7e7e7",
+			"brightBlack": "#6f6b68",
+			"brightRed": "#fa5e5b",
+			"brightGreen": "#16c98d",
+			"brightYellow": "#feef6d",
+			"brightBlue": "#278ad6",
+			"brightPurple": "#d34590",
+			"brightCyan": "#27dede",
+			"brightWhite": "#ffffff",
+			"background": "#2c3643",
+			"foreground": "#ffffff"
+		}
+	],
 
     // Add any keybinding overrides to this array.
     // To unbind a default keybinding, set the command to "unbound"
