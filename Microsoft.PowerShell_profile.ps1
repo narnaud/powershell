@@ -4,7 +4,6 @@ $ToolsFile = (Join-Path $Env:USERPROFILE ".tools.json")
 
 $cde = @{
 	NOARG_CD = $HomeDir
-	CD_PATH = "$HomeDir\dev"
 	AUTO_CD = $false
 }
 $AliasHash = @{
